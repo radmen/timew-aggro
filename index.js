@@ -57,7 +57,7 @@ const aggegateEntries = entries => {
   return grouped.reduce(
     (carry, items) => carry.concat({
       tags: items[0].tags.join(', '),
-      total: moment.duration(sumTime(items), 'seconds').format()
+      total: moment.duration(sumTime(items), 'seconds').format('h[h] mm[m]')
     }),
     []
   )

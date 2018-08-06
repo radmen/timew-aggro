@@ -1,0 +1,29 @@
+{
+  "name": "@radmen/timew-aggro",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "description": "Simple `timew summary` aggregation helper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/radmen/timew-aggro.git"
+  },
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "moment": "^2.22.2",
+    "moment-duration-format": "^2.2.2",
+    "ramda": "^0.25.0"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "standard": "^11.0.1"
+  },
+  "scripts": {
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "prepush": "npm run lint"
+  },
+  "bin": {
+    "timew-aggro": "./index.js"
+  }
+}

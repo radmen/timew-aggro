@@ -38,25 +38,37 @@ const timeToSeconds = time => {
   return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds)
 }
 
+const sanitizeEntryLine = (rawTags, totalTime) => ({
+  tags: rawTags.split(/,/)
+    .map(R.trim)
+    .join(', '),
+  total: timeToSeconds(totalTime)
+})
+
 const readEntry = line => {
-  const results = /^\s+(.+?)\s+(\d\d:\d\d:\d\d)\s+((?:\d\d:\d\d:\d\d|-))\s+(\d{1,}:\d\d:\d\d)/.exec(line)
+  const results = /^\s+(.+?)\s+(\d+:\d\d:\d\d)\s+((?:\d\d:\d\d:\d\d|-))\s+(\d{1,}:\d\d:\d\d)/.exec(line)
+
+  if (!results) {
+    return sanitizeEntryLine('chuj', '0:00:00')
+  }
+
   const [, rawTags, , , totalTime] = results
 
-  const tags = rawTags.split(/,/)
-    .map(tag => tag.trim())
-
-  return {
-    tags,
-    total: timeToSeconds(totalTime)
-  }
+  return sanitizeEntryLine(rawTags, totalTime)
 }
+
+const readHeaderEntry = R.pipe(
+  // hack: just replace header (first row for given date) information with some space
+  R.replace(/^W\d+\s+\d{4}-\d{2}-\d{2}\s+\w{3}/i, ' '),
+  readEntry
+)
 
 const aggegateEntries = entries => {
   const grouped = groupByTag(entries)
 
   return grouped.reduce(
     (carry, items) => carry.concat({
-      tags: items[0].tags.join(', '),
+      tags: items[0].tags,
       total: moment.duration(sumTime(items), 'seconds').format('h[h] mm[m]')
     }),
     []
@@ -69,6 +81,7 @@ const aggregateStack = stack => ({
 })
 
 reader.on('line', line => {
+
   if (line === '' || /^\s+\d{1,}:\d\d:\d\d$/.test(line)) {
     currentDate = null
 
@@ -82,7 +95,7 @@ reader.on('line', line => {
   if (/^W\d+/.test(line)) {
     currentDate = {
       date: readDate(line),
-      entries: []
+      entries: [readHeaderEntry(line)]
     }
 
     stack.push(currentDate)
@@ -91,9 +104,6 @@ reader.on('line', line => {
   }
 
   if (/^\s+\w+/.test(line)) {
-    if (!currentDate) {
-      console.log({line, currentDate})
-    }
     currentDate.entries.push(readEntry(line))
   }
 })

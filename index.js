@@ -99,5 +99,13 @@ reader.on('line', line => {
 })
 
 reader.on('close', () => {
-  console.table(stack.map(aggregateStack)[0].entries)
+  const summary = stack.map(aggregateStack)
+
+  summary.forEach(stack => {
+    console.log(stack.date)
+    console.log('-'.padStart(stack.date.length, '-'))
+    console.log('')
+
+    console.table(stack.entries)
+  })
 })

@@ -10,13 +10,16 @@ This utility is responsible for merging those tasks into single one and displayi
 
 ```
 yarn global add @radmen/timew-aggro
+ln -s $(which timew-aggro) ~/.timewarrior/extensions
 ```
 
 # usage
 
 ```bash
-timew summary | timew-aggro
+timew aggro
 ```
+
+Currently, `timew-aggro` aggregates entries only from current day.
 
 # use it on you own risk
 

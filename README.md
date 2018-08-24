@@ -10,7 +10,7 @@ This utility is responsible for merging those tasks into single one and displayi
 
 ```
 yarn global add @radmen/timew-aggro
-ln -s $(which timew-aggro) ~/.timewarrior/extensions
+ln -s $(which timew-aggro) ~/.timewarrior/extensions/aggro
 ```
 
 # usage
